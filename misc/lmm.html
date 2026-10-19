@@ -12,7 +12,7 @@
 <meta name="author" content="Jemay SALOMON" />
 
 
-<title>LMM</title>
+<title>VarG, varE, H2</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1478,9 +1478,9 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">LMM</h1>
+<h1 class="title toc-ignore">VarG, varE, H2</h1>
 <h4 class="author">Jemay SALOMON</h4>
-<h4 class="date">09/04/2024 18:22:06</h4>
+<h4 class="date">08/11/2025 18:27:25</h4>
 
 </div>
 
@@ -1501,8 +1501,8 @@ l’auteur : Jemay SALOMON (<a href="mailto:jemay.salomon@inrae.fr" class="email
 </div>
 <div id="important" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> IMPORTANT</h1>
-<pre class="r"><code># definir le chemin
-setwd(&quot;/home/jemay/Documents/PhD_Jemay/qGenet/workshop-10-04-2024&quot;)</code></pre>
+<pre class="r"><code># definir votre chemin à vous
+setwd(&quot;/home/jemay/Documents/PhD_Jemay/Jutils/misc&quot;)</code></pre>
 <p>Ce document nécessitera également que des packages externes soient
 disponibles, par exemple :</p>
 <pre class="r"><code>packages &lt;- c(&quot;lme4&quot;, &quot;rmarkdown&quot;)
@@ -1619,7 +1619,7 @@ dat$y=c(replicate(nb, sample(1:n.bl)))
 str(dat)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    500 obs. of  4 variables:
 ##  $ x        : num  1 1 1 1 1 1 1 1 1 1 ...
-##  $ y        : int  89 3 156 237 153 147 140 111 109 99 ...
+##  $ y        : int  102 70 112 45 78 134 128 18 95 103 ...
 ##  $ genotypes: Factor w/ 250 levels &quot;sorgho01&quot;,&quot;sorgho02&quot;,..: 1 2 3 4 5 6 7 8 9 10 ...
 ##  $ block    : Factor w/ 2 levels &quot;A&quot;,&quot;B&quot;: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
 </div>
@@ -1632,10 +1632,10 @@ str(dat)</code></pre>
 génomique possible sur certains environnements)</p>
 <p>block1 : (rendement moyen blockA - rendement moyen blockB)/2</p>
 <pre class="r"><code># true paramètres
-
 truth &lt;- list(mu = 6, var_G = 2, block1 = 0.4, h2 = 0.8)
-
-truth[[&quot;var_E&quot;]]= sigmaE(sigma = truth[[&quot;var_G&quot;]], h2 = truth[[&quot;h2&quot;]])</code></pre>
+truth[[&quot;var_E&quot;]] = getSigma2Err(varG = truth[[&quot;var_G&quot;]], 
+                               h2 = truth[[&quot;h2&quot;]],
+                               nbBlocks = 2)</code></pre>
 <pre class="r"><code>set.seed(1234) ## réplicables</code></pre>
 <pre class="r"><code>blup &lt;- rnorm(sorghos, mean = 0, sd= sqrt(truth[[&quot;var_G&quot;]]))
 e &lt;- rnorm(nrow(dat), mean = 0, sd= sqrt(truth[[&quot;var_E&quot;]]))</code></pre>
@@ -1655,7 +1655,8 @@ listZs &lt;- list()
 listZs[[&quot;Z&quot;]] = mkZ(df = dat, colD = &quot;genotypes&quot;)
 
 #matrix d&#39;indicidence pour les effets fixes
-listZs[[&quot;X&quot;]] = model.matrix(~ 1 + block, data=dat, contrasts.arg = list(block = &quot;contr.sum&quot;))
+listZs[[&quot;X&quot;]] = model.matrix(~ 1 + block, data=dat,
+                             contrasts.arg = list(block = &quot;contr.sum&quot;))
 
 #yield
 # y = X%*%b + Z%*%blup + e  //avec (b = c(mu, block1))
@@ -1663,7 +1664,11 @@ listZs[[&quot;X&quot;]] = model.matrix(~ 1 + block, data=dat, contrasts.arg = li
 y &lt;- listZs[[&quot;X&quot;]]%*%c(truth[[&quot;mu&quot;]], truth[[&quot;block1&quot;]])+listZs[[&quot;Z&quot;]]%*%blup + e
 
 #ajouter yield
-dat$yield &lt;- y[,1]</code></pre>
+dat$yield &lt;- y[,1]
+
+#check
+(mean(dat[dat$block==&quot;A&quot;,]$yield) - mean(dat[dat$block==&quot;B&quot;,]$yield))/2</code></pre>
+<pre><code>## [1] 0.4416206</code></pre>
 </div>
 <div id="inference" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> Inference</h1>
@@ -1682,75 +1687,96 @@ dat$yield &lt;- y[,1]</code></pre>
                  VarCorr(mod)$genotypes[1],
                  sigma(mod)^2))</code></pre>
 <pre><code>##        true      lmer
-## mu      6.0 5.9702861
-## block1  0.4 0.4294302
-## var_G   2.0 2.1225943
-## var_E   0.5 0.4692142</code></pre>
+## mu      6.0 5.9603675
+## block1  0.4 0.4416206
+## var_G   2.0 2.1613924
+## var_E   1.0 0.9384284</code></pre>
 </div>
 <div id="héritabilité" class="section level1" number="10">
 <h1><span class="header-section-number">10</span> Héritabilité</h1>
 <pre class="r"><code>sigma2.geno=VarCorr(mod)$genotypes[1]
 sigma2.R=sigma(mod)^2
-H2=sigma2.geno / (sigma2.geno + sigma2.R)
+H2=sigma2.geno / (sigma2.geno + (sigma2.R/2))
 
 cbind(&quot;true&quot;=truth[[&quot;h2&quot;]],
     &quot;lmer&quot;= H2)</code></pre>
 <pre><code>##      true      lmer
-## [1,]  0.8 0.8189626</code></pre>
-<p>TODO : vérifier la distribution des blups (effets aléatoires)</p>
+## [1,]  0.8 0.8216327</code></pre>
+</div>
+<div id="activité" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> Activité</h1>
+<p><strong>Objectif :</strong> explorer l’effet des paramètres du modèle
+(variance génétique, variance résiduelle, héritabilité, effet de
+bloc)</p>
+<hr />
+<div id="étapes-à-suivre" class="section level3" number="11.0.1">
+<h3><span class="header-section-number">11.0.1</span> Étapes à
+suivre</h3>
 <ul>
-<li><span class="math inline">\(\mathbf{a}_{G} \sim \mathcal{N}(0,
-\sigma^2_{G} Id)\)</span></li>
+<li><p>Modifier les valeurs de <strong><code>varG</code></strong>,
+<strong><code>h2</code></strong> et <strong><code>block1</code></strong>
+dans le script.</p></li>
+<li><p>Vérifier si les valeurs initiales sont correctement retrouvées
+après ajustement du modèle.</p></li>
+<li><p>Expliquer pourquoi les valeurs estimées de
+<strong><code>var_G</code></strong> et
+<strong><code>var_E</code></strong> peuvent différer des valeurs «
+vraies ».</p></li>
+<li><p>Discuter les valeurs choisies et leur <strong>interprétation
+biologique</strong>.</p></li>
 </ul>
-<p>TODO : calculer réponse à la sélection</p>
-<p>Equation du sélectionneur : <span class="math inline">\(R =
-h2S\)</span></p>
+<hr />
+</div>
+<div id="rapport-1-page-en-pdf" class="section level3" number="11.0.2">
+<h3><span class="header-section-number">11.0.2</span> Rapport (1 page en
+PDF)</h3>
 <ul>
-<li><p>R est la différence de moyenne de la population d’une génération
-à l’autre.</p></li>
-<li><p>S se calcule comme la différence entre la moyenne des individus
-sélectionnés (parents de la génération t + 1) et la moyenne de la
-population à la génération t.</p></li>
+<li>Indiquer <strong>votre nom et prénom</strong>.<br />
+</li>
+<li><strong>Section I :</strong> préciser les valeurs des paramètres
+choisies.<br />
+</li>
+<li><strong>Section II :</strong> répondre aux questions précédentes de
+manière concise et claire.</li>
 </ul>
-<p>TODO : simuler des génotypes/marqueurs génétiques et faire la
-prédiction génomique avec les memes paramètres</p>
+<hr />
 <ul>
-<li><p>Architecture génétique du trait</p></li>
-<li><p>SimulSnps</p></li>
-<li><p>Reprendre les paramètres</p></li>
-<li><p>SimulPhenos</p></li>
-<li><p>…</p></li>
+<li><p><strong>À rendre :</strong> un document (rapport) PDF d’une page
+maximum + votre html.</p></li>
+<li><p><strong>À envoyer à : <a href="mailto:jemay.salomon@inrae.fr" class="email">jemay.salomon@inrae.fr</a></strong></p></li>
 </ul>
 </div>
 </div>
-<div id="annexe" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> Annexe</h1>
+</div>
+<div id="annexe" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> Annexe</h1>
 <pre class="r"><code>t1 &lt;- proc.time(); t1 - t0</code></pre>
 <pre><code>## utilisateur     système      écoulé 
-##       0.257       0.005       0.183</code></pre>
+##       0.241       0.001       0.163</code></pre>
 <pre class="r"><code>print(sessionInfo(), locale=FALSE)</code></pre>
-<pre><code>## R version 4.2.2 Patched (2022-11-10 r83330)
-## Platform: x86_64-pc-linux-gnu (64-bit)
+<pre><code>## R version 4.4.1 (2024-06-14)
+## Platform: x86_64-pc-linux-gnu
 ## Running under: Debian GNU/Linux 12 (bookworm)
 ## 
 ## Matrix products: default
-## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-openmp/libblas.so.3
-## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-openmp/libopenblasp-r0.3.21.so
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-openmp/libblas.so.3 
+## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-openmp/libopenblasp-r0.3.21.so;  LAPACK version 3.11.0
 ## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] rmarkdown_2.25 lme4_1.1-35.1  Matrix_1.6-3  
+## [1] rmarkdown_2.30 lme4_1.1-37    Matrix_1.7-0  
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.12       rstudioapi_0.15.0 knitr_1.45        splines_4.2.2    
-##  [5] MASS_7.3-58.2     lattice_0.20-45   R6_2.5.1          rlang_1.1.3      
-##  [9] fastmap_1.1.1     minqa_1.2.6       tools_4.2.2       grid_4.2.2       
-## [13] nlme_3.1-163      xfun_0.41         cli_3.6.2         jquerylib_0.1.4  
-## [17] htmltools_0.5.7   yaml_2.3.8        digest_0.6.34     lifecycle_1.0.4  
-## [21] nloptr_2.0.3      sass_0.4.8        cachem_1.0.8      evaluate_0.23    
-## [25] compiler_4.2.2    bslib_0.6.1       boot_1.3-28.1     jsonlite_1.8.8</code></pre>
+##  [1] nlme_3.1-165      cli_3.6.5         knitr_1.50        rlang_1.1.6      
+##  [5] xfun_0.53         reformulas_0.4.1  jsonlite_2.0.0    minqa_1.2.8      
+##  [9] htmltools_0.5.8.1 sass_0.4.10       grid_4.4.1        evaluate_1.0.5   
+## [13] jquerylib_0.1.4   MASS_7.3-61       fastmap_1.2.0     yaml_2.3.10      
+## [17] lifecycle_1.0.4   compiler_4.4.1    Rcpp_1.1.0        rstudioapi_0.17.1
+## [21] lattice_0.22-6    digest_0.6.37     nloptr_2.2.1      R6_2.6.1         
+## [25] Rdpack_2.6.4      splines_4.4.1     rbibutils_2.3     bslib_0.9.0      
+## [29] tools_4.4.1       boot_1.3-32       cachem_1.1.0</code></pre>
 </div>
 
 

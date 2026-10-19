@@ -1,0 +1,205 @@
+%=====================================================================
+%  CV - Jemay Salomon
+%  Modele LaTeX simple, robuste et facile a maintenir (classe article)
+%  Compilation : pdflatex cv_salomon.tex  (deux passes)
+%=====================================================================
+\documentclass[10pt,a4paper]{article}
+
+% --- Encodage / langue ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+
+% --- Mise en page ---
+\usepackage[top=1.4cm,bottom=1.4cm,left=1.7cm,right=1.7cm]{geometry}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage[expansion=false]{microtype}
+\usepackage[hidelinks]{hyperref}
+
+% --- Couleur d'accent (modifiable) ---
+\definecolor{accent}{HTML}{1F4E79}   % bleu sobre
+
+\hypersetup{
+    colorlinks=true, linkcolor=accent, urlcolor=accent,
+    pdftitle={CV - Jemay SALOMON}, pdfauthor={Jemay SALOMON}
+}
+
+% --- Pas d'indentation, listes compactes ---
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{2em}  % absorbe les petits debordements de justification
+% Espacement par defaut des listes ; la PUCE se regle liste par liste
+% via l'argument optionnel : \begin{itemize}[label=\textbullet] ... \end{itemize}
+\setlist[itemize]{leftmargin=1.2em, topsep=1pt, itemsep=1pt, parsep=0pt}
+
+% --- Style des titres de section ---
+\titleformat{\section}
+  {\color{accent}\large\bfseries\scshape}{}{0pt}{}[{\vspace{2pt}\color{accent}\titlerule[0.8pt]}]
+\titlespacing{\section}{0pt}{10pt}{6pt}
+
+%---------------------------------------------------------------------
+% Commandes utilitaires
+%---------------------------------------------------------------------
+% Entree avec intitule a gauche + date a droite, puis sous-ligne (lieu/organisme)
+% --- Reglages de taille (valeurs en pt : {taille}{interligne}) ---
+\newcommand{\sizeTitre}{\fontsize{11}{13.2}\selectfont}  % intitule (#1)
+\newcommand{\sizeDate} {\fontsize{10}{13.2}\selectfont}  % date (#4)
+\newcommand{\sizeOrg}  {\fontsize{10}{12}\selectfont}    % organisme (#2)
+\newcommand{\sizeLieu} {\fontsize{10}{12}\selectfont}    % lieu (#3)
+
+% --- Commande d'entree ---
+\newcommand{\cventry}[5][2pt]{%
+  \par\noindent\begin{tabularx}{\textwidth}{@{}Xr@{}}
+    {\sizeTitre\textbf{#2}} & {\sizeDate\textbf{#5}}\\
+    {\sizeOrg #3}   & {\sizeLieu #4}\\
+  \end{tabularx}\par\vspace{#1}}
+
+% Ligne simple titre/date (sans sous-ligne)
+\newcommand{\cvline}[2]{%
+  \noindent\begin{tabularx}{\textwidth}{@{}Xr@{}}
+    #1 & #2\\
+  \end{tabularx}}
+
+\begin{document}
+\pagestyle{empty}
+
+%=====================================================================
+% EN-TETE
+%=====================================================================
+\begin{center}
+{\Huge\bfseries\color{accent} JEMAY SALOMON}\\[2pt]
+{\large Ph.D. Candidate in Quantitative Genetics}\\[4pt]
+INRAE, GQE--Le Moulon, Université Paris-Saclay, 91190 Gif-sur-Yvette, France\\[2pt]
++33 7 45 51 94 65 \quad\textbar\quad
+\href{mailto:jemay.salomon@inrae.fr}{jemay.salomon@inrae.fr} \quad\textbar\quad
+\href{https://jemaysalomon.github.io/}{jemaysalomon.github.io}
+\end{center}
+
+%=====================================================================
+\section{Summary}
+I am a PhD student (3\textsuperscript{rd} year) in quantitative genetics. I’m interested in using advanced mixed-modeling approaches to better estimate genetic effects and (co)variance components (e.g. automatic differentiation using R/C++), evaluating model robustness through stochastic simulations, and, in a more general way, applying quantitative genetics theory to dissect the genetic architecture of complex traits. I’m also interested in simulation-based
+optimization of breeding-schemes, which includes implementing and comparing genomic and/or phenomic vs phenotypic selection, finding the right balance between genetic diversity and genetic gain/cost.
+
+%=====================================================================
+\section{Education}
+\cventry[8pt]{Ph.D. in Quantitative Genetics}{Université Paris-Saclay, Gif-sur-Yvette, FR}{}{Oct. 2023 -- present}
+\cventry[8pt]{M.Sc. in Quantitative Genetics}{Institut Agro Montpellier, Montpellier, FR}{}{Sept. 2021 -- Sept. 2023}
+\cventry{B.Sc. in Agronomy}{Université Quisqueya, Port-au-Prince, HT}{}{Sept. 2013 -- Sept. 2018}
+
+%=====================================================================
+\section{Professional experience}
+\cventry[-2pt]{Research Assistant}{INRAE -- GQE Le Moulon, Gif-sur-Yvette, FR}{}{Oct. 2023 -- present}
+\begin{itemize}[label=\textbullet]
+  \item Investigate the genetic basis and architecture of interspecific mixing ability in wheat-pea association.
+  \item Develop a joint breeding methodology for sole and intercropping systems.
+  \item Design and implement research protocol.
+\end{itemize}
+\bigskip
+\cventry[-2pt]{Research Intern (Master II)}{CHIBAS, Mirebalais, HT}{}{Mars 2023 -- Aug. 2023}
+\begin{itemize}[label=\textbullet]
+  \item Optimized genomic prediction models for sorghum yield across multiple environments
+	\item Designed and implemented research protocol
+	\item Collected and managed phenotypic data from field trials, contributing to high-quality dataset creation
+\end{itemize}
+\bigskip
+\cventry[-2pt]{Research Intern (Master I)}{CIRAD -- CNRS, Montpellier, FR}{}{May 2022 -- Aug. 2022}
+\begin{itemize}[label=\textbullet]
+  \item Modeled phyllochron-plastochron relationship in sorghum in order to predict panicle initiation date
+  \item Supported field trial operations through phenotypic data collection
+\item Synthesized findings into a scientific report, presenting analytical results and growth model interpretations
+\end{itemize}
+
+%=====================================================================
+\section{Publications}
+\textbf{Journal papers}
+\begin{itemize}[label=\textemdash]
+  \item \textbf{Salomon, J}., Enjalbert, J. \& Flutre, T. (2026). Joint modeling of social genetic effects in mono- and pluri-specific groups: case study in intercrops. \textit{Genetics}, iyag177. \href{https://doi.org/10.1093/genetics/iyag177}{doi.org/10.1093/genetics/iyag177}
+\end{itemize}
+\bigskip
+\textbf{Manuscripts in preparation}
+\begin{itemize}[label=\textemdash, itemsep=6pt]
+  \item \textbf{Salomon, J}., Levardois, K., Freitas, V., Moutier, N., Enjalbert, J. \& Flutre, T. (2026). Variability of social genetic effects in a wheat--pea intercropping trial over three environments. \textit{In prep.}
+  \item Charles, J.R., \textbf{Salomon, J}. \& Pressoir, G. (2026). Genomic prediction of sorghum across environments: effects of training design and stability indices. \textit{In prep.}
+\end{itemize}
+\newpage
+%=====================================================================
+\section{Software}
+\begin{itemize}[label=\textemdash, itemsep=6pt]
+  \item Flutre, T., Enjalbert, J., Forst, E., Remerand, M., \& \textbf{Salomon, J}. (2026). \textbf{plantmix}: Genetic Study of Plant Mixtures (v1.0.2) [Logiciel R]. \href{https://cran.r-project.org/web/packages/plantmix/index.html}{CRAN}
+    \item \textbf{Salomon, J}. (2026). \textbf{TMBusers}: Useful functions to work with Template Model Builder (TMB).[Logiciel R]. \href{https://github.com/JemaySALOMON/TMBusers}{GitHub}
+\end{itemize}
+
+%=====================================================================
+\section{Conference presentations}
+\begin{itemize}[label=\textemdash, itemsep=6pt]
+  \item \textbf{Salomon, J}., Levardois, K., Freitas, V., Moutier, N., Enjalbert, J. \& Flutre, T. (2026).. Dissecting the genetic architecture of direct and social genetic values: case study in wheat-pea intercrops. \textit{Présentation orale}, Mix4Agroecology. Paris, France.
+  \item \textbf{Salomon, J}., Enjalbert, J., \& Flutre, T. (2025). Leveraging a broad gradient of plant--plant interactions to efficiently breed for cereal--legume mixtures. \textit{Poster}, XIX EUCARPIA Biometrics in Plant Breeding. Edinburgh,UK. \href{https://hal.inrae.fr/hal-05546246}{hal-05546246}
+  \item \textbf{Salomon, J}., Enjalbert, J., \& Flutre, T. (2025). Leveraging genetic diversity to study plant--plant interactions and breed for crop mixtures. \textit{Poster}, PSL-Qlife Quantitative Biology Winter School 2025. Paris, France.
+  \item \textbf{Salomon, J}., Enjalbert, J., \& Flutre, T. (2024). Leveraging a broad gradient of plant--plant interactions to efficiently breed for cereal--legume mixtures. \textit{Présentation orale}, SFE2 Conference. Lyon, France.
+  \item \textbf{Salomon, J}., \& Pressoir, G. (2023). Optimization of prediction models for yield stability in sorghum: physiological determinisms, genomic prediction incorporating G$\times$E, and phenomic approaches. \textit{Poster}, ELLS Scientific Student Conference 2023. Stuttgart, Germany.
+\end{itemize}
+
+%=====================================================================
+\section{Additional Training}
+\cventry{Statistical Workshop}{Saint-Rémy-lès-Chevreuse, FR}{}{Nov. 2025}
+\noindent
+\textbf{Best Practices and Recent Developments in Nonlinear Mixed-Effects and Joint Longitudinal–Survival Modeling} : 
+  \begin{itemize}[label=\textbullet, itemsep=1pt]
+	 \item Nonlinear mixed-effects models for biological and longitudinal data.
+	\item Joint modeling of longitudinal and survival data.
+	\item High-dimensional variable selection using LASSO and Bayesian approaches.
+	\item Reproducible scientific programming and automatic differentiation.
+	\item Statistical modeling applications in plant breeding using R and Python
+\end{itemize}
+\bigskip
+\cventry{BIOMETRICS EUCARPIA 2025 -- Satellite Workshop}{The Roslin Institute, Edinburgh, UK}{}{Sept. 2025}
+\noindent
+\textbf{Running Simulation of Selective Breeding Programs Using AlphaSimR \& FieldSimR}
+  \begin{itemize}[label=\textbullet, itemsep=1pt]
+  \item Simulation and optimization of selective breeding programs using the AlphaSimR R package.
+  \item Modeling and management of spatial heterogeneity in field trials using the FieldSimR R package.
+\end{itemize}
+
+%=====================================================================
+\section{Mentoring}
+\begin{itemize}[label=\textbullet, itemsep=6pt]
+  \item \textbf{Rouguiyatou Diallo} (04/2025--08/2025, co-supervised with T. Flutre) --- Master’s thesis topic : Characterize the genetic basis of phenotypic plasticity in wheat grown in solecrop versus in intercrop with pea, in terms of growth and epidemic limitation).
+  \item \textbf{Rémi Viéban} (06/2026) --- Internship topic (Engineer 1\textsuperscript{st} year) : Evaluation of phenomic and genomic prediction in cereal--legume intercropping systems.
+\end{itemize}
+
+%=====================================================================
+\section{Skills}
+{\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+Breeding for intercropping & Quantitative genetics & Plant breeding\\[2pt]
+Statistical genetics & Linear Mixed Models & Satistical modeling\\[2pt]
+Genomic / phenomic selection & C++ Programming (intermediate) & R Programming\\
+\end{tabularx}}
+
+%=====================================================================
+\section{Languages}
+\begin{itemize}[label=\textbullet]
+ \item Haitian creole (native or bilingual)
+ \item French  (native or bilingual)
+ \item English (professional)
+\end{itemize}
+
+%=====================================================================
+\newpage
+\section{Interests}
+\begin{itemize}[label=\textbullet, itemsep=6pt]
+\item Music Production: Managing a private record label \item DJ \& Live performance
+\end{itemize}
+
+%=====================================================================
+\section{Referees}
+\begin{itemize}[label=\textbullet, itemsep=6pt]
+  \item \textbf{Dr Jérôme Enjalbert},  Research director (DR), GQE-Le Moulon (Université Paris-Saclay, INRAE, CNRS, AgroParisTech). \href{mailto:jerome.enjalbert@inrae.fr}{jerome.enjalbert@inrae.fr} : 01 69 15 68 55
+  \item \textbf{Dr Timothée Flutre}, Research scientist (CR), GQE-Le Moulon (Université Paris-Saclay, INRAE, CNRS, AgroParisTech). \href{mailto:timothee.flutre@inrae.fr}{timothee.flutre@inrae.fr} : 01 69 15 61 33
+  \item \textbf{Pr Dominique This}, Professor, Institut Agro Montpellier, UMR AGAP. \href{mailto:dominique.this@supagro.fr}{dominique.this@supagro.fr} : 04 67 61 58 29
+\end{itemize}
+
+\end{document}
